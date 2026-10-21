@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kotonoha-workbench"
+version = "0.1.0"
+description = "短単位・長単位を統合する日本語コーパス検索CLI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "QuQuLa89"}]
+dependencies = ["mecab-python3>=1.0.8", "unidic-lite>=1.0.8"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.9", "pre-commit>=3", "build>=1"]
+
+[project.scripts]
+kotonoha = "kotonoha.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kotonoha"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
