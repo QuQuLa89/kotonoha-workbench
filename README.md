@@ -17,10 +17,24 @@ macOS・Linuxでは仮想環境の有効化に `source .venv/bin/activate` を�
 
 ## 取り込み
 
+解析したいファイル（`.txt`、`.csv`、`.tsv`）は、リポジトリ直下の `data/` フォルダ（`C:\Projects\kotonoha-workbench\data\`）に置くことをおすすめします。`data/` 内は、フォルダをGitで維持するための `.gitkeep` を除き、サブフォルダも含めて `.gitignore` で追跡対象から除外しています。未公開の研究資料や解析結果が通常の `git add` でコミットに混入するのを防げます。
+
+リポジトリ直下で、次のコマンドを実行してください。
+
 ```powershell
-kotonoha ingest corpus.txt --db corpus.sqlite3 --no-comainu
-kotonoha ingest interviews.csv --text-column 本文 --db corpus.sqlite3
-kotonoha ingest interviews.tsv --text-column text --db corpus.sqlite3
+kotonoha ingest data/corpus.txt --db data/corpus.sqlite3 --no-comainu
+kotonoha ingest data/interviews.csv --text-column 本文 --db data/corpus.sqlite3
+kotonoha ingest data/interviews.tsv --text-column text --db data/corpus.sqlite3
+```
+
+PC内の別の場所にあるファイルも、移動せずに取り込めます。Windows TerminalでPowerShellを開き、次の手順でファイルの絶対パスを入力してください。
+
+1. `kotonoha ingest ` と入力します。末尾に半角スペースを入れ、Enterはまだ押さないでください。
+2. エクスプローラーから取り込みたいファイルをターミナルへドラッグ＆ドロップします。ファイルの絶対パスが自動入力されます。
+3. パスの後ろに半角スペースと `--db data/corpus.sqlite3` を入力し、Enterで実行します。空白を含むパスは、パス全体がダブルクォートで囲まれていることを確認してください。
+
+```powershell
+kotonoha ingest "C:\研究資料\調査 01.txt" --db data/corpus.sqlite3
 ```
 
 `.txt` は句点・疑問符・感嘆符・改行で分割します。CSV・TSVはヘッダーを必須とし、本文セル1件を1文書・1文として扱います。本文中に句点や改行があっても行の単位を保ちます。空の本文は文書だけ保存します。本文列の省略時は `text`、`本文`、`テキスト`、`発話` の順で探し、該当しなければ先頭列を使います。ほかの列は行番号とともにメタデータへ保存します。
@@ -30,11 +44,11 @@ kotonoha ingest interviews.tsv --text-column text --db corpus.sqlite3
 ## 検索と出力
 
 ```powershell
-kotonoha search --db corpus.sqlite3 --luw-lemma 東京都現代美術館 --kwic
-kotonoha search --db corpus.sqlite3 --luw-pos 名詞 --suw-pos 接頭辞 --position 1 --kwic
-kotonoha search --db corpus.sqlite3 --luw-pos 動詞 --suw-pos 動詞 --suw-c-form 連用形 --position 1 --kwic
-kotonoha search --db corpus.sqlite3 --suw-lemma 立ち上がる --position 1 --export-csv verbs.csv
-kotonoha search --db corpus.sqlite3 --export-tsv all.tsv
+kotonoha search --db data/corpus.sqlite3 --luw-lemma 東京都現代美術館 --kwic
+kotonoha search --db data/corpus.sqlite3 --luw-pos 名詞 --suw-pos 接頭辞 --position 1 --kwic
+kotonoha search --db data/corpus.sqlite3 --luw-pos 動詞 --suw-pos 動詞 --suw-c-form 連用形 --position 1 --kwic
+kotonoha search --db data/corpus.sqlite3 --suw-lemma 立ち上がる --position 1 --export-csv data/verbs.csv
+kotonoha search --db data/corpus.sqlite3 --export-tsv data/all.tsv
 ```
 
 語彙素は完全一致、品詞と活用形は階層単位の前方一致で検索します。例えば `名詞` は `名詞-普通名詞` にも一致します。`--suw-lemma`、`--suw-pos`、`--suw-c-form`、`--position` は同じ構成短単位に適用します。条件を省略すると全長単位を返します。件数は長単位の件数です。KWICは原文から前後40文字を切り出します。

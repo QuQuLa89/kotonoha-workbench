@@ -20,3 +20,5 @@ dist/
 .pre-commit/
 *.material.txt
 *.yomiyasu*
+data/*
+!data/.gitkeep
