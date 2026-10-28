@@ -130,7 +130,6 @@ def load_documents(
                 **metadata,
                 "encoding": encoding,
                 "rubies": list(prepared.rubies),
-                "offset_map": list(prepared.offsets),
             },
         )
 
